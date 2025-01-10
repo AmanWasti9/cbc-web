@@ -1,135 +1,78 @@
 import { useState } from "react";
 import { VehicleTable } from "./VehicleTable";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-
-const vehicleData = [
-  {
-    id: 1,
-    status: "active",
-    customerName: "IMRAN SANITATION",
-    salesNo: "VT02/0516/22",
-    regNo: "CH-0015",
-    engineNo: "11118097",
-    speed: 45,
-  },
-  {
-    id: 2,
-    status: "inactive",
-    customerName: "ALI WASTE MANAGEMENT",
-    salesNo: "VT03/0721/22",
-    regNo: "CH-0022",
-    engineNo: "22229088",
-    speed: 0,
-  },
-  {
-    id: 3,
-    status: "active",
-    customerName: "HASSAN WATER SUPPLY",
-    salesNo: "VT01/0309/22",
-    regNo: "CH-0008",
-    engineNo: "33337066",
-    speed: 38,
-  },
-  // Add more dummy data as needed
-];
-
-const fenceCoverageData = [
-  {
-    name: "CLIFTON",
-    totalFences: 100,
-    fencesCovered: 75,
-    fencesRemaining: 25,
-    fencesCoveredPercentage: 75,
-  },
-  {
-    name: "MALL",
-    totalFences: 50,
-    fencesCovered: 40,
-    fencesRemaining: 10,
-    fencesCoveredPercentage: 80,
-  },
-  {
-    name: "PH-9",
-    totalFences: 80,
-    fencesCovered: 60,
-    fencesRemaining: 20,
-    fencesCoveredPercentage: 75,
-  },
-  {
-    name: "PHASE-1",
-    totalFences: 120,
-    fencesCovered: 90,
-    fencesRemaining: 30,
-    fencesCoveredPercentage: 75,
-  },
-  {
-    name: "PHASE-2",
-    totalFences: 90,
-    fencesCovered: 70,
-    fencesRemaining: 20,
-    fencesCoveredPercentage: 77.78,
-  },
-  // Add more dummy data as needed
-];
-
-const vehicleLogsData = [
-  {
-    id: 1,
-    name: "JOHN DOE",
-    phaseName: "PHASE-6",
-    regNo: "CH-0008",
-    enterTime: "7:59:47 AM 09/01/2025",
-    exitTime: "8:01:23 AM 09/01/2025",
-    duration: "00 : 01 : 36",
-  },
-  {
-    id: 2,
-    name: "JANE SMITH",
-    phaseName: "PHASE-6",
-    regNo: "CH-0015",
-    enterTime: "7:57:09 AM 09/01/2025",
-    exitTime: "7:47:14 AM 09/01/2025",
-    duration: "00 : 00 : 05",
-  },
-  {
-    id: 3,
-    name: "MIKE JOHNSON",
-    phaseName: "PHASE-8",
-    regNo: "CH-0024",
-    enterTime: "8:06:40 AM 09/01/2025",
-    exitTime: "8:15:56 AM 09/01/2025",
-    duration: "00 : 09 : 16",
-  },
-  // Add more dummy data as needed
-];
+import { allVehicles } from "../../data/vehiclesData";
+import { fenceCoverageData } from "../../data/fenceCoverageData";
+import { vehicleLogsData } from "../../data/vehicleLogsData";
+import * as XLSX from "xlsx";
 
 export function TabView() {
   const [activeTab, setActiveTab] = useState("vehicles");
 
+  // Function to export the current tab data to Excel
+  const exportToExcel = () => {
+    let data = [];
+    if (activeTab === "vehicles") {
+      data = allVehicles;
+    } else if (activeTab === "fenceCoverage") {
+      data = fenceCoverageData;
+    } else if (activeTab === "vehicleLogs") {
+      data = vehicleLogsData;
+    }
+
+    // Convert JSON data to worksheet
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `${activeTab} Data`);
+
+    // Generate Excel file and trigger download
+    XLSX.writeFile(wb, `${activeTab}_data.xlsx`);
+  };
+
   return (
     <div className="rounded-2xl border border-green-100 bg-white/80 backdrop-blur-sm overflow-hidden">
-      <div className="flex border-b border-green-100">
-        <TabButton
-          active={activeTab === "vehicles"}
-          onClick={() => setActiveTab("vehicles")}
-        >
-          Vehicles
-        </TabButton>
-        <TabButton
-          active={activeTab === "fenceCoverage"}
-          onClick={() => setActiveTab("fenceCoverage")}
-        >
-          Fence Coverage
-        </TabButton>
-        <TabButton
-          active={activeTab === "vehicleLogs"}
-          onClick={() => setActiveTab("vehicleLogs")}
-        >
-          Vehicle Logs
-        </TabButton>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div className="flex border-b border-green-100">
+          <TabButton
+            active={activeTab === "vehicles"}
+            onClick={() => setActiveTab("vehicles")}
+          >
+            Vehicles
+          </TabButton>
+          <TabButton
+            active={activeTab === "fenceCoverage"}
+            onClick={() => setActiveTab("fenceCoverage")}
+          >
+            Fence Coverage
+          </TabButton>
+          <TabButton
+            active={activeTab === "vehicleLogs"}
+            onClick={() => setActiveTab("vehicleLogs")}
+          >
+            Vehicle Logs
+          </TabButton>
+        </div>
+        <div>
+          {/* <button onClick={exportToExcel}>Export to Excel</button> */}
+          <img
+            src="/Images/excel.png"
+            onClick={exportToExcel}
+            style={{
+              width: "80%",
+              height: "80%",
+              cursor: "pointer",
+            }}
+          />
+        </div>
       </div>
       <div>
-        {activeTab === "vehicles" && <VehicleTable data={vehicleData} />}
+        {activeTab === "vehicles" && <VehicleTable data={allVehicles} />}
         {activeTab === "fenceCoverage" && (
           <FenceCoverageTable data={fenceCoverageData} />
         )}
@@ -190,6 +133,9 @@ function FenceCoverageTable({ data }) {
         <thead>
           <tr className="border-b border-green-100 bg-green-50/50">
             <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
+              S#
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
               Name
             </th>
             <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
@@ -210,6 +156,9 @@ function FenceCoverageTable({ data }) {
           {paginatedData.map((item, index) => (
             <tr key={index} className="hover:bg-green-50/50 transition-colors">
               <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                {item.id}
+              </td>
+              <td className="px-4 py-3 text-sm font-medium text-gray-900">
                 {item.name}
               </td>
               <td className="px-4 py-3 text-sm text-gray-600">
@@ -226,6 +175,20 @@ function FenceCoverageTable({ data }) {
               </td>
             </tr>
           ))}
+
+          {/* Empty rows to maintain table size */}
+          {Array.from(
+            { length: itemsPerPage - paginatedData.length },
+            (_, index) => (
+              <tr key={`empty-${index}`}>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
       <div className="flex items-center justify-between border-t border-green-100 px-4 py-3">
@@ -334,6 +297,20 @@ function VehicleLogsTable({ data }) {
               </td>
             </tr>
           ))}
+
+          {/* Empty rows to maintain table size */}
+          {Array.from(
+            { length: itemsPerPage - paginatedData.length },
+            (_, index) => (
+              <tr key={`empty-${index}`}>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+                <td className="px-4 py-3">&nbsp;</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
       <div className="flex items-center justify-between border-t border-green-100 px-4 py-3">

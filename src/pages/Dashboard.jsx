@@ -7,28 +7,8 @@ import {
   PhaseCompletionChart,
 } from "../components/dashboard/Charts";
 import { TabView } from "../components/dashboard/TabView";
-
-const allVehicles = [
-  {
-    status: "active",
-    customerName: "IMRAN SANITATION",
-    salesNo: "VT02/0516/22",
-    regNo: "CH-0015",
-    engineNo: "11118097",
-    speed: 45,
-    type: "water_bowzer",
-  },
-  {
-    status: "inactive",
-    customerName: "ALI WASTE MANAGEMENT",
-    salesNo: "VT03/0721/22",
-    regNo: "CH-0022",
-    engineNo: "22229088",
-    speed: 0,
-    type: "sanitation",
-  },
-  // Add more mock data here...
-];
+import Map from "./Map";
+import { allVehicles } from "../data/vehiclesData"; 
 
 const activityData = [
   { name: "Mon", active: 65, inactive: 35 },
@@ -49,7 +29,7 @@ const phaseData = [
 ];
 
 export default function Dashboard() {
-  const [selectedVehicleType, setSelectedVehicleType] = useState(null);
+  const [selectedVehicleType, setSelectedVehicleType] = useState("active");
 
   const waterBowzers = allVehicles.filter((v) => v.type === "water_bowzer");
   const sanitationVehicles = allVehicles.filter((v) => v.type === "sanitation");
@@ -98,49 +78,36 @@ export default function Dashboard() {
           <PhaseCompletionChart data={phaseData} />
         </div>
 
-        {/* {selectedVehicleType ? (
-          <VehicleList
-            vehicles={
-              selectedVehicleType === "water_bowzer"
-                ? waterBowzers
-                : selectedVehicleType === "sanitation"
-                ? sanitationVehicles
-                : activeVehicles
-            }
-            title={
-              selectedVehicleType === "water_bowzer"
-                ? "Water Bowzer Vehicles"
-                : selectedVehicleType === "sanitation"
-                ? "Sanitation Vehicles"
-                : "Active Vehicles"
-            }
-          />
-        ) : (
-          <>
-            <TabView />
-          </>
-        )} */}
-
-        <div>
+        {/* Vehicle List */}
+        <div className="grid gap-6 grid-cols-1">
+          {selectedVehicleType && (
+            <VehicleList
+              vehicles={
+                {
+                  water_bowzer: waterBowzers,
+                  sanitation: sanitationVehicles,
+                  active: activeVehicles,
+                }[selectedVehicleType] || activeVehicles
+              }
+              title={
+                {
+                  water_bowzer: "Water Bowzer Vehicles",
+                  sanitation: "Sanitation Vehicles",
+                  active: "Active Vehicles",
+                }[selectedVehicleType] || "Active Vehicles"
+              }
+            />
+          )}
+        </div>
+        {/* TabView */}
+        <div className="grid gap-6 grid-cols-1">
           <TabView />
         </div>
 
-        {selectedVehicleType && (
-          <VehicleList
-            vehicles={
-              {
-                water_bowzer: waterBowzers,
-                sanitation: sanitationVehicles,
-              }[selectedVehicleType] || activeVehicles
-            }
-            title={
-              {
-                water_bowzer: "Water Bowzer Vehicles",
-                sanitation: "Sanitation Vehicles",
-              }[selectedVehicleType] || "Active Vehicles"
-            }
-          />
-        )}
+        {/* Map view */}
+        <div className="grid gap-6 grid-cols-1">
+          <Map />
+        </div>
       </div>
     </DashboardLayout>
   );

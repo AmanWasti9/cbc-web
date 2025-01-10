@@ -37,6 +37,9 @@ export function VehicleList({ vehicles, title }) {
           <thead>
             <tr className="border-b border-green-100 bg-green-50/50">
               <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
+                S#
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
                 Status
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-green-800">
@@ -59,12 +62,15 @@ export function VehicleList({ vehicles, title }) {
                 key={index}
                 className="hover:bg-green-50/50 transition-colors"
               >
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex h-2 w-2 rounded-full ${
                       vehicle.status === "active"
                         ? "bg-green-500"
-                        : "bg-yellow-400"
+                        : "bg-red-500"
                     }`}
                   />
                 </td>
@@ -82,6 +88,20 @@ export function VehicleList({ vehicles, title }) {
                 </td>
               </tr>
             ))}
+
+            {/* Empty rows to maintain table size */}
+            {Array.from(
+              { length: itemsPerPage - paginatedVehicles.length },
+              (_, index) => (
+                <tr key={`empty-${index}`}>
+                  <td className="px-4 py-3">&nbsp;</td>
+                  <td className="px-4 py-3">&nbsp;</td>
+                  <td className="px-4 py-3">&nbsp;</td>
+                  <td className="px-4 py-3">&nbsp;</td>
+                  <td className="px-4 py-3">&nbsp;</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>

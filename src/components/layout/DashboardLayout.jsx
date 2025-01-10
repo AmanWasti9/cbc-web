@@ -1,5 +1,6 @@
 import { BellIcon, MenuIcon, UserCircle, Settings, LogOut } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function DashboardLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -9,6 +10,7 @@ export function DashboardLayout({ children }) {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
         <div className="flex h-16 items-center justify-between px-4">
+          {/* Left Section: Sidebar Toggle & Logo */}
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -24,13 +26,15 @@ export function DashboardLayout({ children }) {
                   className="h-full w-full object-contain"
                 />
               </div>
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-green-800 to-green-600 bg-clip-text text-transparent">
+              <h1 className="hidden text-xl font-semibold bg-gradient-to-r from-green-800 to-green-600 bg-clip-text text-transparent md:block">
                 Cantonment Board Clifton
               </h1>
             </div>
           </div>
+
+          {/* Right Section: Time, Notifications, Profile */}
           <div className="flex items-center gap-4">
-            <span className="text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full">
+            <span className="hidden text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full lg:block">
               {new Date().toLocaleString()}
             </span>
             <button className="relative rounded-lg p-2 hover:bg-green-50 text-green-700">
@@ -41,6 +45,7 @@ export function DashboardLayout({ children }) {
               <button className="h-9 w-9 rounded-full bg-gradient-to-r from-green-600 to-lime-500 flex items-center justify-center text-white">
                 <span className="text-sm font-medium">AD</span>
               </button>
+              {/* Dropdown Menu */}
               <div className="absolute right-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-lg border border-green-100 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
                 <a
                   href="#"
@@ -68,6 +73,13 @@ export function DashboardLayout({ children }) {
             </div>
           </div>
         </div>
+
+        {/* Time Display for Small Screens */}
+        <div className="block lg:hidden text-center bg-green-50 py-1">
+          <span className="text-sm text-green-700">
+            {new Date().toLocaleString()}
+          </span>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -80,8 +92,6 @@ export function DashboardLayout({ children }) {
         >
           <nav className="flex flex-col gap-1 p-4">
             <NavItem active>Dashboard</NavItem>
-            <NavItem>Analytics</NavItem>
-            <NavItem>Vehicles</NavItem>
             <NavItem>Reports</NavItem>
             <NavItem>Settings</NavItem>
           </nav>
