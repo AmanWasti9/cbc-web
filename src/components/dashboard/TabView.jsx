@@ -4,6 +4,7 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { allVehicles } from "../../data/vehiclesData";
 import { fenceCoverageData } from "../../data/fenceCoverageData";
 import { vehicleLogsData } from "../../data/vehicleLogsData";
+import { FiDownload } from "react-icons/fi";
 import * as XLSX from "xlsx";
 
 export function TabView() {
@@ -197,7 +198,7 @@ function FenceCoverageTable({ data }) {
           {Math.min(currentPage * itemsPerPage, filteredData.length)} of{" "}
           {filteredData.length} entries
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1 justify-center items-center">
           <PaginationButton
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -210,6 +211,10 @@ function FenceCoverageTable({ data }) {
           >
             <ChevronRight className="h-4 w-4" />
           </PaginationButton>
+          <div>
+            {/* Push download icon to the right */}
+            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+          </div>
         </div>
       </div>
     </div>
@@ -319,7 +324,7 @@ function VehicleLogsTable({ data }) {
           {Math.min(currentPage * itemsPerPage, filteredData.length)} of{" "}
           {filteredData.length} entries
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1 justify-center items-center">
           <PaginationButton
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -332,6 +337,10 @@ function VehicleLogsTable({ data }) {
           >
             <ChevronRight className="h-4 w-4" />
           </PaginationButton>
+          <div>
+            {/* Push download icon to the right */}
+            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+          </div>
         </div>
       </div>
     </div>

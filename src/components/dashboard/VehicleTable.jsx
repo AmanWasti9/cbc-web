@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { FiDownload } from "react-icons/fi";
 
 export function VehicleTable({ data }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,9 +71,7 @@ export function VehicleTable({ data }) {
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex h-2 w-2 rounded-full ${
-                      item.status === "active"
-                        ? "bg-green-500"
-                        : "bg-red-500"
+                      item.status === "active" ? "bg-green-500" : "bg-red-500"
                     }`}
                   />
                 </td>
@@ -116,7 +115,7 @@ export function VehicleTable({ data }) {
           {Math.min(currentPage * itemsPerPage, filteredData.length)} of{" "}
           {filteredData.length} entries
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1 justify-center items-center">
           <PaginationButton
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -129,6 +128,10 @@ export function VehicleTable({ data }) {
           >
             <ChevronRight className="h-4 w-4" />
           </PaginationButton>
+          <div>
+            {/* Push download icon to the right */}
+            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+          </div>
         </div>
       </div>
     </div>

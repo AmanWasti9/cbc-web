@@ -1,9 +1,44 @@
 import { BellIcon, MenuIcon, UserCircle, Settings, LogOut } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation  } from "react-router-dom";
+import { allVehicles } from "../../data/vehiclesData";
 
 export function DashboardLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    // Check screen width to determine initial sidebar state
+    return window.innerWidth >= 768; // Sidebar open by default on medium screens and above
+  });
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+
+  const location = useLocation();
+
+  // Automatically open the "Admins" dropdown if on a related route
+  // Automatically open the "Admins" dropdown if on a related route
+  const isAdminRoute = location.pathname === "/v-m";
+
+  // Update dropdown state based on route
+  useEffect(() => {
+    if (isAdminRoute) {
+      setIsAdminDropdownOpen(true);
+    }
+  }, [location, isAdminRoute]);
+
+  // Handle window resize to toggle sidebar state
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Set the initial state on mount
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-lime-50">
@@ -46,14 +81,8 @@ export function DashboardLayout({ children }) {
                 <span className="text-sm font-medium">AD</span>
               </button>
               {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-lg border border-green-100 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
-                <a
-                  href="#"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-green-50"
-                >
-                  <UserCircle className="h-4 w-4" />
-                  Profile
-                </a>
+              <div className="absolute right-0 mt-1 w-48 py-2 bg-white rounded-lg shadow-lg border border-green-100 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
+                
                 <a
                   href="#"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-green-50"
@@ -62,13 +91,13 @@ export function DashboardLayout({ children }) {
                   Settings
                 </a>
                 <hr className="my-2 border-green-100" />
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4" />
                   Logout
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -91,8 +120,45 @@ export function DashboardLayout({ children }) {
           } transition-all duration-300 ease-in-out overflow-hidden border-r bg-white/80 backdrop-blur-sm`}
         >
           <nav className="flex flex-col gap-1 p-4">
-            <NavItem active>Dashboard</NavItem>
-            <NavItem>Reports</NavItem>
+            <Link
+              active
+              to="/dashboard"
+              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+                location.pathname === "/dashboard"
+                  ? "bg-gradient-to-r from-green-600 to-lime-500 text-white font-medium"
+                  : "text-gray-600 hover:bg-green-50 hover:text-green-700"
+              }`}
+            >
+              Dashboard
+            </Link>
+
+            {/* Admin Dropdown */}
+            <button
+              onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+              className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+                isAdminDropdownOpen
+                  ? "text-gray-600 hover:bg-green-50 hover:text-green-700"
+                  : "text-gray-600 hover:bg-green-50 hover:text-green-700"
+              }`}
+            >
+              <span>Admins</span>
+              <span className="ml-auto">{isAdminDropdownOpen ? "▲" : "▼"}</span>
+            </button>
+            {isAdminDropdownOpen && (
+              <div className="ml-4 flex flex-col gap-1">
+                <Link
+                  to="/v-m"
+                  state={{ data: allVehicles }}
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+                    location.pathname === "/v-m"
+                      ? "bg-gradient-to-r from-green-600 to-lime-500 text-white font-medium"
+                      : "text-gray-600 hover:bg-green-50 hover:text-green-700"
+                  }`}
+                >
+                  Vehicle Management
+                </Link>
+              </div>
+            )}
             <NavItem>Settings</NavItem>
           </nav>
         </aside>

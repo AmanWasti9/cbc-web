@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { MetricCard } from "../components/dashboard/MetricCard";
 import { VehicleList } from "../components/dashboard/VehicleList";
@@ -7,8 +7,8 @@ import {
   PhaseCompletionChart,
 } from "../components/dashboard/Charts";
 import { TabView } from "../components/dashboard/TabView";
-import Map from "./Map";
-import { allVehicles } from "../data/vehiclesData"; 
+import Map from "../components/dashboard/Map";
+import { allVehicles } from "../data/vehiclesData";
 
 const activityData = [
   { name: "Mon", active: 65, inactive: 35 },
@@ -35,8 +35,13 @@ export default function Dashboard() {
   const sanitationVehicles = allVehicles.filter((v) => v.type === "sanitation");
   const activeVehicles = allVehicles.filter((v) => v.status === "active");
 
+  const vehicleListRef = useRef(null); // Ref for the Vehicle List section
+
   const handleMetricCardClick = (type) => {
     setSelectedVehicleType(type);
+    if (vehicleListRef.current) {
+      vehicleListRef.current.scrollIntoView({ behavior: "smooth" }); // Scroll to Vehicle List section
+    }
   };
 
   return (
@@ -72,6 +77,7 @@ export default function Dashboard() {
             trend={12.3}
           />
         </div>
+
         {/* Charts */}
         <div className="grid gap-6 lg:grid-cols-2">
           <VehicleActivityChart data={activityData} />
@@ -79,7 +85,7 @@ export default function Dashboard() {
         </div>
 
         {/* Vehicle List */}
-        <div className="grid gap-6 grid-cols-1">
+        <div ref={vehicleListRef} className="grid gap-6 grid-cols-1">
           {selectedVehicleType && (
             <VehicleList
               vehicles={
@@ -99,6 +105,7 @@ export default function Dashboard() {
             />
           )}
         </div>
+
         {/* TabView */}
         <div className="grid gap-6 grid-cols-1">
           <TabView />
