@@ -24,6 +24,7 @@ export default function VehicleDataManagement() {
 
   return (
     <DashboardLayout>
+      <div className="grid gap-6 grid-cols-1">
       <div className="rounded-2xl border border-green-100 bg-white/80 backdrop-blur-sm">
         <div className="p-4 border-b border-green-100">
           <div className="relative">
@@ -137,6 +138,7 @@ export default function VehicleDataManagement() {
           </div>
         </div>
       </div>
+        </div>
     </DashboardLayout>
   );
 }
