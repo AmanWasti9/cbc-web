@@ -5,29 +5,42 @@ import { allVehicles } from "../../data/vehiclesData";
 import { fenceCoverageData } from "../../data/fenceCoverageData";
 import { vehicleLogsData } from "../../data/vehicleLogsData";
 import { FiDownload } from "react-icons/fi";
-import * as XLSX from "xlsx";
+import { exportToExcel } from "./excel"; // Import the reusable function
 
 export function TabView() {
   const [activeTab, setActiveTab] = useState("vehicles");
 
-  // Function to export the current tab data to Excel
-  const exportToExcel = () => {
-    let data = [];
-    if (activeTab === "vehicles") {
-      data = allVehicles;
-    } else if (activeTab === "fenceCoverage") {
-      data = fenceCoverageData;
-    } else if (activeTab === "vehicleLogs") {
-      data = vehicleLogsData;
+  // // Function to export the current tab data to Excel
+  // const exportToExcel = () => {
+  //   let data = [];
+  //   if (activeTab === "vehicles") {
+  //     data = allVehicles;
+  //   } else if (activeTab === "fenceCoverage") {
+  //     data = fenceCoverageData;
+  //   } else if (activeTab === "vehicleLogs") {
+  //     data = vehicleLogsData;
+  //   }
+
+  //   // Convert JSON data to worksheet
+  //   const ws = XLSX.utils.json_to_sheet(data);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, `${activeTab} Data`);
+
+  //   // Generate Excel file and trigger download
+  //   XLSX.writeFile(wb, `${activeTab}_data.xlsx`);
+  // };
+
+  const getActiveTabData = () => {
+    switch (activeTab) {
+      case "vehicles":
+        return allVehicles;
+      case "fenceCoverage":
+        return fenceCoverageData;
+      case "vehicleLogs":
+        return vehicleLogsData;
+      default:
+        return [];
     }
-
-    // Convert JSON data to worksheet
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, `${activeTab} Data`);
-
-    // Generate Excel file and trigger download
-    XLSX.writeFile(wb, `${activeTab}_data.xlsx`);
   };
 
   return (
@@ -59,8 +72,7 @@ export function TabView() {
             Vehicle Logs
           </TabButton>
         </div>
-        <div>
-          {/* <button onClick={exportToExcel}>Export to Excel</button> */}
+        {/* <div>
           <img
             src="/Images/excel.png"
             onClick={exportToExcel}
@@ -70,7 +82,8 @@ export function TabView() {
               cursor: "pointer",
             }}
           />
-        </div>
+        </div> 
+        */}
       </div>
       <div>
         {activeTab === "vehicles" && <VehicleTable data={allVehicles} />}
@@ -212,8 +225,10 @@ function FenceCoverageTable({ data }) {
             <ChevronRight className="h-4 w-4" />
           </PaginationButton>
           <div>
-            {/* Push download icon to the right */}
-            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+            <FiDownload
+              onClick={() => exportToExcel(filteredData, "fenceCoverage")}
+              className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500"
+            />
           </div>
         </div>
       </div>
@@ -338,8 +353,10 @@ function VehicleLogsTable({ data }) {
             <ChevronRight className="h-4 w-4" />
           </PaginationButton>
           <div>
-            {/* Push download icon to the right */}
-            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+            <FiDownload
+              onClick={() => exportToExcel(filteredData, "vehicleLogs")}
+              className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500"
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { FiDownload } from "react-icons/fi";
+import { exportToExcel } from "./excel";
 
 export function VehicleTable({ data }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -130,7 +131,10 @@ export function VehicleTable({ data }) {
           </PaginationButton>
           <div>
             {/* Push download icon to the right */}
-            <FiDownload className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500" />
+            <FiDownload
+              onClick={() => exportToExcel(filteredData, "vehicles")}
+              className="h-[20px] w-[20px] ml-[50px] cursor-pointer text-gray-600 hover:text-green-500"
+            />
           </div>
         </div>
       </div>
